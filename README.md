@@ -15,7 +15,3 @@ Built by [Canonn Research Group](https://canonn.science/) for the Elite Dangerou
 ## Data
 
 Orbital elements are sourced from Elite Dangerous system-data dumps (Spansh) for *Rothie AA-A h389*. Positions for *2 h* and *2 i* are derived from their own orbit around the shared barycentre plus the barycentre's orbit around the red dwarf, so they have not been independently verified against in-game observation — treat margins of a few thousand kilometres as uncertain.
-
-## Running it
-
-This is a single self-contained `index.html` — no build step or server required. Open it directly in a browser.
