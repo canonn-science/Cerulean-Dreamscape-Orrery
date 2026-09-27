@@ -1,0 +1,713 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>Cerulean Dreamscape Orrery — Canonn</title>
+  <link rel="icon" type="image/png" href="assets/canonn-logo.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link
+    href="https://fonts.googleapis.com/css2?family=Oxanium:wght@400;600&family=Source+Sans+3:wght@400;600&display=swap"
+    rel="stylesheet">
+  <style>
+    :root {
+      --bg: #f7f5f2;
+      --panel: #efece6;
+      --ink: #1c1a17;
+      --muted: #665f56;
+      --line: #d8d2c8;
+      --giant: #2f7fc4;
+      --giant2: #5aa5e0;
+      --star: #d2452f;
+      --contact: #c98a00;
+      --track: #9a9488;
+      --accent: #ef7b04;
+      --accent-ink: #8a3f00;
+      box-sizing: border-box;
+      padding-top: env(safe-area-inset-top, 0px);
+      padding-bottom: env(safe-area-inset-bottom, 0px);
+    }
+
+    @media (prefers-color-scheme: dark) {
+      :root:not([data-theme="light"]) {
+        --bg: #263238;
+        --panel: #2f3d44;
+        --ink: #eceff1;
+        --muted: #90a4ae;
+        --line: #4f5d64;
+        --giant: #4f9ee0;
+        --giant2: #8cc4f0;
+        --star: #ff6a4d;
+        --contact: #f2c14e;
+        --track: #607d8b;
+        --accent: #ff9a2e;
+        --accent-ink: #ffcb8a;
+      }
+    }
+
+    :root[data-theme="dark"] {
+      --bg: #263238;
+      --panel: #2f3d44;
+      --ink: #eceff1;
+      --muted: #90a4ae;
+      --line: #4f5d64;
+      --giant: #4f9ee0;
+      --giant2: #8cc4f0;
+      --star: #ff6a4d;
+      --contact: #f2c14e;
+      --track: #607d8b;
+      --accent: #ff9a2e;
+      --accent-ink: #ffcb8a;
+    }
+
+    html {
+      scroll-padding-top: env(safe-area-inset-top, 0px)
+    }
+
+    *,
+    *::before,
+    *::after {
+      box-sizing: inherit
+    }
+
+    body {
+      margin: 0;
+      background: var(--bg);
+      color: var(--ink);
+      font: 16px/1.5 "Source Sans 3", system-ui, sans-serif
+    }
+
+    main {
+      max-width: 1180px;
+      margin: 0 auto;
+      padding: 0 20px 40px
+    }
+
+    .brandbar {
+      border-bottom: 1px solid var(--line);
+      background: var(--panel)
+    }
+
+    .brandbar .inner {
+      max-width: 1180px;
+      margin: 0 auto;
+      padding: 10px 20px;
+      display: flex;
+      align-items: center;
+      gap: 10px
+    }
+
+    .brandbar img {
+      width: 28px;
+      height: 28px;
+      display: block
+    }
+
+    .brandbar .word {
+      font: 600 .95rem/1.1 Oxanium, "Segoe UI", sans-serif;
+      color: var(--ink);
+      letter-spacing: .04em;
+      text-transform: uppercase
+    }
+
+    .brandbar .word span {
+      color: var(--accent)
+    }
+
+    .brandbar a {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      text-decoration: none
+    }
+
+    .donate {
+      margin-left: auto;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 6px 16px;
+      border-radius: 999px;
+      background: linear-gradient(#ffd140, #ffb100);
+      border: 1px solid #d99000;
+      color: #4a2f00;
+      font: 600 .85rem/1 "Source Sans 3", sans-serif;
+      text-decoration: none;
+      box-shadow: 0 1px 2px rgba(0, 0, 0, .15)
+    }
+
+    .donate:hover {
+      background: linear-gradient(#ffdb63, #ffbc22)
+    }
+
+    .donate:active {
+      background: #ffb100
+    }
+
+    h1 {
+      font: 600 clamp(1.5rem, 3vw, 2.1rem)/1.15 Oxanium, "Segoe UI", sans-serif;
+      margin: 24px 0 4px;
+      letter-spacing: .01em
+    }
+
+    .lede {
+      color: var(--muted);
+      margin: 0 0 20px;
+      max-width: 70ch
+    }
+
+    .views {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 16px
+    }
+
+    @media (max-width:820px) {
+      .views {
+        grid-template-columns: 1fr
+      }
+    }
+
+    figure {
+      margin: 0;
+      background: var(--panel);
+      border: 1px solid var(--line);
+      border-radius: 10px;
+      overflow: hidden
+    }
+
+    figcaption {
+      padding: 10px 14px;
+      font-size: .92rem;
+      color: var(--muted);
+      border-top: 1px solid var(--line)
+    }
+
+    figcaption b {
+      color: var(--ink);
+      font-weight: 600
+    }
+
+    canvas {
+      display: block;
+      width: 100%;
+      aspect-ratio: 1/1
+    }
+
+    .wide {
+      grid-column: 1/-1
+    }
+
+    .wide canvas {
+      aspect-ratio: 12/5
+    }
+
+    .planes canvas {
+      aspect-ratio: 3/1
+    }
+
+    .seg {
+      display: inline-flex;
+      gap: 6px;
+      margin-left: 8px;
+      vertical-align: middle
+    }
+
+    .seg button {
+      padding: 3px 10px;
+      font-size: .88rem
+    }
+
+    .seg button[aria-pressed="true"] {
+      border-color: var(--accent);
+      color: var(--ink);
+      font-weight: 600
+    }
+
+    .bar {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 10px;
+      margin: 18px 0 8px
+    }
+
+    button,
+    select,
+    input {
+      font: inherit;
+      color: var(--ink);
+      background: var(--panel);
+      border: 1px solid var(--line);
+      border-radius: 6px;
+      padding: 6px 12px
+    }
+
+    button {
+      cursor: pointer
+    }
+
+    button:hover {
+      border-color: var(--accent)
+    }
+
+    :focus-visible {
+      outline: 2px solid var(--accent);
+      outline-offset: 2px
+    }
+
+    #play {
+      min-width: 5.5em;
+      font-weight: 600
+    }
+
+    .clock {
+      font-family: Oxanium, sans-serif;
+      font-size: 1.15rem;
+      margin-left: auto
+    }
+
+    .clock small {
+      color: var(--muted);
+      font-size: .85rem;
+      margin-left: 8px
+    }
+
+    .readouts {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 12px;
+      margin: 10px 0 24px
+    }
+
+    @media (max-width:620px) {
+      .readouts {
+        grid-template-columns: 1fr
+      }
+    }
+
+    .ro {
+      border-left: 3px solid var(--line);
+      padding: 4px 12px
+    }
+
+    .ro span {
+      display: block;
+      color: var(--muted);
+      font-size: .88rem
+    }
+
+    .ro strong {
+      font: 600 1.25rem Oxanium, sans-serif
+    }
+
+    .ro.hit {
+      border-color: var(--contact)
+    }
+
+    .ro.hit strong {
+      color: var(--contact)
+    }
+
+    h2 {
+      font: 600 1.15rem Oxanium, sans-serif;
+      margin: 0 0 8px
+    }
+
+    .tablewrap {
+      overflow-x: auto
+    }
+
+    table {
+      border-collapse: collapse;
+      width: 100%;
+      min-width: 700px;
+      font-size: .95rem
+    }
+
+    th,
+    td {
+      text-align: left;
+      padding: 7px 10px;
+      border-bottom: 1px solid var(--line)
+    }
+
+    th {
+      color: var(--muted);
+      font-weight: 600
+    }
+
+    tbody tr {
+      cursor: pointer
+    }
+
+    tbody tr:hover {
+      background: var(--panel)
+    }
+
+    tr.contact td.result {
+      color: var(--contact);
+      font-weight: 600
+    }
+
+    tr.near td.result {
+      color: var(--accent-ink);
+      font-weight: 600
+    }
+
+    .note {
+      color: var(--muted);
+      font-size: .92rem;
+      margin-top: 22px
+    }
+
+    .note a {
+      color: var(--accent-ink);
+      text-decoration: underline;
+      text-underline-offset: 2px
+    }
+
+    .note a:hover {
+      color: var(--accent)
+    }
+  </style>
+</head>
+
+<body>
+  <div class="brandbar">
+    <div class="inner">
+      <a href="https://canonn.science/" target="_blank" rel="noopener">
+        <img src="assets/canonn-logo.png" alt="Canonn Research Group logo">
+        <span class="word">Canonn <span>Science</span></span>
+      </a>
+      <a class="donate" href="https://canonn.science/donate/" target="_blank" rel="noopener">Donate</a>
+    </div>
+  </div>
+  <main>
+    <h1>Cerulean Dreamscape Orrery</h1>
+    <p class="lede">The red dwarf <i>Rothie AA-A h389 2</i>, the gas giant <i>2 g</i>, and the close binary pair <i>2
+        h</i> and <i>2 i</i>, computed from their recorded orbital elements. Dates are real (UTC); the in-universe year
+      is shown alongside.</p>
+
+    <div class="views">
+      <figure><canvas id="sys" aria-label="Top-down view of the red dwarf and the orbits of 2 g and the pair"></canvas>
+        <figcaption><b>Around the red dwarf.</b> The two orbits are only about 168,000 km apart, so they almost overlap
+          at this scale. The square marks the close-up.</figcaption>
+      </figure>
+      <figure><canvas id="zoom" aria-label="Close-up centred on the 2 h and 2 i pair"></canvas>
+        <figcaption><b>Following the pair.</b> Centred on the pair's barycentre with the red dwarf always below. Bodies
+          are to scale; the dashed line is <i>2 g</i>'s path over the next and previous three days.</figcaption>
+      </figure>
+      <figure class="wide"><canvas id="edge" aria-label="Edge-on view of 2 g and the pair"></canvas>
+        <figcaption><b>Edge on.</b> <span id="edgeCap"></span>
+          <span class="seg" role="group" aria-label="Edge-on viewpoint"><button type="button" data-view="star"
+              aria-pressed="true">From the red dwarf</button><button type="button" data-view="side"
+              aria-pressed="false">Across the orbit</button></span>
+        </figcaption>
+      </figure>
+      <figure class="wide planes"><canvas id="planes"
+          aria-label="Height of the two orbital planes around the red dwarf"></canvas>
+        <figcaption><b>The two orbital planes, all the way round.</b> Height of each plane above the reference plane at
+          its orbital distance, plotted against direction from the red dwarf. Both planes pass through the red dwarf, so
+          they cross each other on one line. They are tilted <span id="tiltAB"></span>° relative to each other, so at
+          the pair's distance they are never more than about <span id="maxSep"></span> km apart. The vertical line marks
+          where 2 g and the pair are now.</figcaption>
+      </figure>
+    </div>
+
+    <div class="bar">
+      <button id="play" type="button">Play</button>
+      <label>Speed <select id="speed">
+          <option value="0.25">15 min per second</option>
+          <option value="1">1 hour per second</option>
+          <option value="6" selected>6 hours per second</option>
+          <option value="24">1 day per second</option>
+          <option value="240">10 days per second</option>
+        </select></label>
+      <button type="button" data-step="-6">Back 6 h</button>
+      <button type="button" data-step="6">Forward 6 h</button>
+      <button type="button" id="prev">Previous encounter</button>
+      <button type="button" id="next">Next encounter</button>
+      <label>Go to <input id="when" type="datetime-local" step="60"></label>
+      <div class="clock" id="clock"></div>
+    </div>
+
+    <div class="readouts">
+      <div class="ro" id="roH"><span><i>2 g</i> to <i>2 h</i>, surface to surface</span><strong>–</strong></div>
+      <div class="ro" id="roI"><span><i>2 g</i> to <i>2 i</i>, surface to surface</span><strong>–</strong></div>
+      <div class="ro" id="roB"><span><i>2 g</i> to the pair's barycentre</span><strong>–</strong></div>
+    </div>
+
+    <h2>Encounters, 2026 to 2048</h2>
+    <div class="tablewrap">
+      <table>
+        <thead>
+          <tr>
+            <th>Contact start</th>
+            <th>Contact end</th>
+            <th>Closest to <i>2 h</i></th>
+            <th>Closest to <i>2 i</i></th>
+            <th>Result</th>
+          </tr>
+        </thead>
+        <tbody id="rows"></tbody>
+      </table>
+    </div>
+
+    <p class="note">Each encounter is the moment <i>2 g</i> overtakes the pair, roughly every 354.5 days. Distances are
+      surface to surface, so a negative figure means the bodies overlap. Select a row to jump to its closest moment.
+      These positions use Elite Dangerous's orbital-element convention (ascending node and argument of periapsis are
+      mirrored from the standard astronomical one), matching the Canonn <a
+        href="https://signals.canonn.tech/?system=Rothie%20AA-A%20h389">signals page</a>. Positions of bodies orbiting a
+      barycentre, like <i>2 h</i> and <i>2 i</i>, have not been verified against observations, so treat margins of a few
+      thousand kilometres as uncertain.</p>
+    <p class="note">Built for the Elite Dangerous exploration community by <a href="https://canonn.science/"
+        target="_blank" rel="noopener">Canonn Research Group</a>.</p>
+  </main>
+  <script>
+    const AU = 149597870.7, DAY = 86400000;
+    const EL = {
+      g: { a: 0.059289003129353, e: 0.003824, i: 0.067035, O: -53.901319, w: 43.994017, M: 237.921781, P: 9.8364224174537, ep: Date.parse("2026-09-25T22:24:19Z"), r: 31964.242 },
+      b: { a: 0.0604115845394067, e: 0.009723, i: 0.006454, O: -73.321459, w: 68.916312, M: 257.687455, P: 10.1171054497917, ep: Date.parse("2026-09-25T22:24:05Z") },
+      h: { a: 0.000667164101633948, e: 0.144444, i: -7.299509, O: -133.263363, w: 355.94144, M: 204.268003, P: 2.17992660623843, ep: Date.parse("2026-09-25T22:24:11Z"), r: 30865.96 },
+      i: { a: 0.000792876373836362, e: 0.144444, i: -7.299509, O: -133.263363, w: 175.941445, M: 204.256243, P: 2.17992660623843, ep: Date.parse("2026-09-25T22:24:05Z"), r: 27893.85 }
+    };
+    const R = Math.PI / 180;
+    function kep(o, t) {
+      const a = o.a * AU, e = o.e;
+      let M = o.M * R + 2 * Math.PI * (t - o.ep) / DAY / o.P; M %= 2 * Math.PI;
+      let E = M; for (let k = 0; k < 12; k++) E -= (E - e * Math.sin(E) - M) / (1 - e * Math.cos(E));
+      const x = a * (Math.cos(E) - e), y = a * Math.sqrt(1 - e * e) * Math.sin(E);
+      const cw = Math.cos(-o.w * R), sw = Math.sin(-o.w * R), cO = Math.cos(-o.O * R), sO = Math.sin(-o.O * R), ci = Math.cos(o.i * R), si = Math.sin(o.i * R);
+      return [(cO * cw - sO * sw * ci) * x + (-cO * sw - sO * cw * ci) * y, (sO * cw + cO * sw * ci) * x + (-sO * sw + cO * cw * ci) * y, (sw * si) * x + (cw * si) * y];
+    }
+    function state(t) {
+      const g = kep(EL.g, t), b = kep(EL.b, t), h0 = kep(EL.h, t), i0 = kep(EL.i, t);
+      const h = [b[0] + h0[0], b[1] + h0[1], b[2] + h0[2]], i = [b[0] + i0[0], b[1] + i0[1], b[2] + i0[2]];
+      const d = (p, q) => Math.hypot(p[0] - q[0], p[1] - q[1], p[2] - q[2]);
+      return { g, b, h, i, gapH: d(g, h) - EL.g.r - EL.h.r, gapI: d(g, i) - EL.g.r - EL.i.r, sepB: d(g, b) };
+    }
+    function gapOf(u, which) { const s = state(u); return which === 'h' ? s.gapH : s.gapI }
+    function bisectCrossing(a, b, which) {
+      let ga = gapOf(a, which) < 0;
+      for (let k = 0; k < 30; k++) { const m = (a + b) / 2; if ((gapOf(m, which) < 0) === ga) a = m; else b = m; }
+      return (a + b) / 2;
+    }
+    function encounters(t0, t1) {
+      const out = []; const step = 6 * 3600e3; let prev = null, pt = t0;
+      const ang = t => { const g = kep(EL.g, t), b = kep(EL.b, t); let x = Math.atan2(b[1], b[0]) - Math.atan2(g[1], g[0]); return Math.atan2(Math.sin(x), Math.cos(x)); };
+      for (let t = t0; t < t1; t += step) {
+        const a = ang(t); if (prev !== null && prev > 0 && a <= 0 && prev < 1) {
+          let best = { h: [1e18, 0], i: [1e18, 0] };
+          let hStart = null, hEnd = null, iStart = null, iEnd = null, pu = null, pgh = null, pgi = null;
+          for (let u = t - 4 * DAY; u < t + 4 * DAY; u += 120e3) {
+            const s = state(u);
+            if (s.gapH < best.h[0]) best.h = [s.gapH, u];
+            if (s.gapI < best.i[0]) best.i = [s.gapI, u];
+            if (pu !== null) {
+              if (pgh >= 0 && s.gapH < 0 && hStart === null) hStart = bisectCrossing(pu, u, 'h');
+              if (pgh < 0 && s.gapH >= 0 && hStart !== null && hEnd === null) hEnd = bisectCrossing(pu, u, 'h');
+              if (pgi >= 0 && s.gapI < 0 && iStart === null) iStart = bisectCrossing(pu, u, 'i');
+              if (pgi < 0 && s.gapI >= 0 && iStart !== null && iEnd === null) iEnd = bisectCrossing(pu, u, 'i');
+            }
+            pu = u; pgh = s.gapH; pgi = s.gapI;
+          }
+          if (hStart !== null && hEnd === null) hEnd = pu;
+          if (iStart !== null && iEnd === null) iEnd = pu;
+          out.push({
+            t, h: best.h, i: best.i,
+            hWindow: hStart !== null ? { start: hStart, end: hEnd } : null,
+            iWindow: iStart !== null ? { start: iStart, end: iEnd } : null
+          });
+        } prev = a;
+      }
+      return out;
+    }
+    function contactWindow(e) {
+      const starts = [], ends = [];
+      if (e.hWindow) { starts.push(e.hWindow.start); ends.push(e.hWindow.end) }
+      if (e.iWindow) { starts.push(e.iWindow.start); ends.push(e.iWindow.end) }
+      return starts.length ? { start: Math.min(...starts), end: Math.max(...ends) } : null;
+    }
+
+
+    const STAR_R = 0.415618898634076 * 695700;
+    const $ = id => document.getElementById(id);
+    const fmt = n => Math.round(n).toLocaleString('en-GB');
+    let t = Date.parse("2026-10-19T00:00:00Z"), playing = false, last = null;
+    const ev = encounters(Date.parse("2026-09-01T00:00:00Z"), Date.parse("2049-01-01T00:00:00Z"));
+    const closest = e => e.h[0] < e.i[0] ? e.h[1] : e.i[1];
+    function iso(ms) { return new Date(ms).toISOString() }
+    function gameDate(ms) { const d = new Date(ms); return d.getUTCDate() + ' ' + d.toLocaleString('en-GB', { month: 'short', timeZone: 'UTC' }) + ' ' + (d.getUTCFullYear() + 1286) }
+    function realDate(ms, withTime) { const d = new Date(ms); let s = d.getUTCDate() + ' ' + d.toLocaleString('en-GB', { month: 'short', timeZone: 'UTC' }) + ' ' + d.getUTCFullYear(); if (withTime) s += ', ' + iso(ms).slice(11, 16); return s }
+    function verdict(g) { return g < 0 ? 'Contact' : g < 30000 ? 'Near miss' : 'Clear' }
+    function gapText(g) { return g < 0 ? 'overlap ' + fmt(-g) + ' km' : fmt(g) + ' km' }
+    const rows = $('rows');
+    ev.forEach(e => {
+      const tr = document.createElement('tr'); const m = Math.min(e.h[0], e.i[0]);
+      tr.className = m < 0 ? 'contact' : m < 30000 ? 'near' : '';
+      const cw = contactWindow(e);
+      const utcTime = ms => iso(ms).slice(11, 16) + ' UTC';
+      const startCell = cw ? `<td title="${realDate(cw.start, true)} UTC">${gameDate(cw.start)}, ${utcTime(cw.start)}</td>` : '<td>–</td>';
+      const endCell = cw ? `<td title="${realDate(cw.end, true)} UTC">${gameDate(cw.end)}, ${utcTime(cw.end)}</td>` : '<td>–</td>';
+      tr.innerHTML = `${startCell}${endCell}<td>${gapText(e.h[0])}</td><td>${gapText(e.i[0])}</td><td class="result">${verdict(m)}</td>`;
+      tr.tabIndex = 0; const go = () => { t = closest(e); setPlaying(false); draw(); window.scrollTo({ top: 0, behavior: 'smooth' }) };
+      tr.onclick = go; tr.onkeydown = k => { if (k.key === 'Enter' || k.key === ' ') { k.preventDefault(); go() } }; rows.appendChild(tr);
+    });
+    function css(n) { return getComputedStyle(document.documentElement).getPropertyValue(n).trim() }
+    function setup(c) { const dpr = window.devicePixelRatio || 1, w = c.clientWidth; c.width = w * dpr; c.height = w * dpr; const x = c.getContext('2d'); x.setTransform(dpr, 0, 0, dpr, 0, 0); return [x, w] }
+    function disc(x, px, py, r, fill, minr) { x.beginPath(); x.arc(px, py, Math.max(r, minr || 0), 0, 2 * Math.PI); x.fillStyle = fill; x.fill() }
+    function drawSys(s) {
+      const [x, w] = setup($('sys')), c = w / 2, k = (w * 0.44) / 9.3e6; const giant = css('--giant'), line = css('--track'), ink = css('--ink'), muted = css('--muted');
+      x.clearRect(0, 0, w, w);
+      for (const o of [EL.g, EL.b]) { x.beginPath(); for (let j = 0; j <= 240; j++) { const p = kep(o, o.ep + j / 240 * o.P * DAY); const X = c + p[0] * k, Y = c - p[1] * k; j ? x.lineTo(X, Y) : x.moveTo(X, Y) } x.strokeStyle = line; x.lineWidth = 1; x.stroke() }
+      disc(x, c, c, STAR_R * k, css('--star'), 3);
+      x.font = '13px "Source Sans 3",sans-serif'; x.fillStyle = muted; x.fillText('2', c + 8, c - 6);
+      const gx = c + s.g[0] * k, gy = c - s.g[1] * k, bx = c + s.b[0] * k, by = c - s.b[1] * k;
+      disc(x, gx, gy, EL.g.r * k, giant, 3.5); disc(x, bx, by, 1, css('--giant2'), 3.5);
+      const bs = 450000 * k * 2; x.strokeStyle = ink; x.globalAlpha = .6; x.strokeRect(bx - bs / 2, by - bs / 2, bs, bs); x.globalAlpha = 1;
+      const ang = Math.atan2(s.b[1], s.b[0]), ox = Math.cos(ang) * 18, oy = -Math.sin(ang) * 18;
+      x.fillStyle = ink; x.textAlign = 'center'; x.fillText('pair', bx + ox, by + oy + 4);
+      const ag = Math.atan2(s.g[1], s.g[0]); x.fillText('2 g', gx - Math.cos(ag) * 22, gy + Math.sin(ag) * 22 + 4); x.textAlign = 'left';
+    }
+    function drawZoom(s) {
+      const [x, w] = setup($('zoom')), c = w / 2, half = 450000, k = (w / 2) / half;
+      const giant = css('--giant'), giant2 = css('--giant2'), line = css('--track'), ink = css('--ink'), muted = css('--muted'), hit = css('--contact');
+      x.clearRect(0, 0, w, w);
+      const ang = Math.atan2(s.b[1], s.b[0]), ca = Math.cos(ang), sa = Math.sin(ang);
+      const P = (dx, dy) => [c + (-dx * sa + dy * ca) * k, c - (dx * ca + dy * sa) * k];
+      // scale bar
+      x.strokeStyle = muted; x.fillStyle = muted; x.lineWidth = 1; const sb = 100000 * k; x.beginPath(); x.moveTo(14, w - 16); x.lineTo(14 + sb, w - 16); x.stroke();
+      x.font = '12px "Source Sans 3",sans-serif'; x.fillText('100,000 km', 14, w - 22);
+      x.textAlign = 'center'; x.fillText('toward the red dwarf', c, w - 10); x.textAlign = 'left';
+      // pair orbits
+      for (const o of [EL.h, EL.i]) { x.beginPath(); for (let j = 0; j <= 160; j++) { const p = kep(o, o.ep + j / 160 * o.P * DAY); const [X, Y] = P(p[0], p[1]); j ? x.lineTo(X, Y) : x.moveTo(X, Y) } x.strokeStyle = line; x.stroke() }
+      // 2 g track
+      x.setLineDash([4, 5]); x.beginPath(); let first = true;
+      for (let dt = -3 * DAY; dt <= 3 * DAY; dt += 1800e3) {
+        const u = t + dt, g = kep(EL.g, u), b = kep(EL.b, u), a2 = Math.atan2(b[1], b[0]), c2 = Math.cos(a2), s2 = Math.sin(a2);
+        const dx = g[0] - b[0], dy = g[1] - b[1]; const X = c + (-dx * s2 + dy * c2) * k, Y = c - (dx * c2 + dy * s2) * k; first ? x.moveTo(X, Y) : x.lineTo(X, Y); first = false
+      }
+      x.strokeStyle = line; x.stroke(); x.setLineDash([]);
+      // bary
+      x.strokeStyle = muted; x.beginPath(); x.moveTo(c - 5, c); x.lineTo(c + 5, c); x.moveTo(c, c - 5); x.lineTo(c, c + 5); x.stroke();
+      const bodies = [['2 h', s.h, EL.h.r, s.gapH < 0], ['2 i', s.i, EL.i.r, s.gapI < 0], ['2 g', s.g, EL.g.r, s.gapH < 0 || s.gapI < 0]];
+      for (const [n, p, r, h] of bodies) {
+        const [X, Y] = P(p[0] - s.b[0], p[1] - s.b[1]); if (X < -80 || X > w + 80 || Y < -80 || Y > w + 80) continue;
+        disc(x, X, Y, r * k, n === '2 g' ? giant : giant2); if (h) { x.strokeStyle = hit; x.lineWidth = 2.5; x.beginPath(); x.arc(X, Y, r * k + 2, 0, 2 * Math.PI); x.stroke(); x.lineWidth = 1 }
+        x.fillStyle = ink; x.font = '600 13px Oxanium,sans-serif'; x.textAlign = 'center'; x.fillText(n, X, Y - r * k - 7); x.textAlign = 'left'
+      }
+      const [gX, gY] = P(s.g[0] - s.b[0], s.g[1] - s.b[1]);
+      if (gX < 0 || gX > w || gY < 0 || gY > w) {
+        x.fillStyle = muted; x.font = '13px "Source Sans 3",sans-serif'; x.textAlign = 'center';
+        const d = s.sepB; x.fillText('2 g is ' + fmt(d / 1e3) + ' thousand km away', c, 24); x.textAlign = 'left'
+      }
+    }
+    let edgeView = 'star';
+    const EDGE_CAP = {
+      star: 'Looking outward from the red dwarf, with bodies to scale. Left to right is the direction of travel, up and down is height above the reference plane through the red dwarf. The dashed lines are the orbital planes of the pair\'s barycentre and of 2 g, with their height at the pair. Nearer bodies are drawn in front.',
+      side: 'Looking across the orbit, with bodies to scale. The red dwarf is off to the left; up and down is height above the reference plane through it. The dashed lines are the orbital planes of the pair\'s barycentre and of 2 g, with their height at the pair.'
+    };
+    function drawEdge(s) {
+      const c = $('edge'), dpr = window.devicePixelRatio || 1, w = c.clientWidth, h = w * 5 / 12; c.width = w * dpr; c.height = h * dpr;
+      const x = c.getContext('2d'); x.setTransform(dpr, 0, 0, dpr, 0, 0); x.clearRect(0, 0, w, h);
+      const half = 300000, k = (w / 2) / half, cx = w / 2, cy = h / 2;
+      const giant = css('--giant'), giant2 = css('--giant2'), line = css('--track'), ink = css('--ink'), muted = css('--muted'), hit = css('--contact');
+      const ang = Math.atan2(s.b[1], s.b[0]), ca = Math.cos(ang), sa = Math.sin(ang);
+      // horizontal axis and depth (larger depth = further from viewer)
+      const proj = (d) => {
+        const rad = d[0] * ca + d[1] * sa, tan = -d[0] * sa + d[1] * ca;
+        return edgeView === 'star' ? { X: cx + tan * k, Y: cy - d[2] * k, depth: rad } : { X: cx + rad * k, Y: cy - d[2] * k, depth: -tan }
+      };
+      // orbital planes: reference plane z=0, barycentre 13's plane, 2 g's plane (all pass through the red dwarf)
+      const hx = [-sa, ca], rx = [ca, sa], axis = edgeView === 'star' ? hx : rx;
+      const planeZ = (o, u) => {
+        const I = o.i * R, O = o.O * R, nx = Math.sin(O) * Math.sin(I), ny = -Math.cos(O) * Math.sin(I), nz = Math.cos(I);
+        const Px = s.b[0] + axis[0] * u, Py = s.b[1] + axis[1] * u; return -(nx * Px + ny * Py) / nz
+      };
+      const lines = [{ name: 'reference plane', z: () => 0, col: line, dash: [2, 6], lw: 1 },
+      { name: "barycentre's orbital plane", z: u => planeZ(EL.b, u), col: giant2, dash: [8, 5], lw: 1.5 },
+      { name: "2 g's orbital plane", z: u => planeZ(EL.g, u), col: giant, dash: [3, 4], lw: 1.5 }];
+      const U = (w / 2) / k, labs = [];
+      for (const L of lines) {
+        x.setLineDash(L.dash); x.strokeStyle = L.col; x.lineWidth = L.lw; x.beginPath();
+        x.moveTo(0, cy - L.z(-U) * k); x.lineTo(w, cy - L.z(U) * k); x.stroke(); x.setLineDash([]); x.lineWidth = 1;
+        let ly = cy - L.z(U) * k - 6; while (labs.some(v => Math.abs(v - ly) < 15)) ly -= 15; labs.push(ly);
+        x.font = '12px "Source Sans 3",sans-serif'; x.fillStyle = L.col === line ? muted : L.col; x.textAlign = 'right';
+        x.fillText(L.name + (L.name === 'reference plane' ? '' : ' (' + (L.z(0) >= 0 ? '+' : '−') + fmt(Math.abs(L.z(0))) + ' km)'), w - 10, ly); x.textAlign = 'left'
+      }
+      const sb = 50000 * k; x.strokeStyle = muted; x.beginPath(); x.moveTo(12, h - 14); x.lineTo(12 + sb, h - 14); x.stroke(); x.fillText('50,000 km', 12, h - 20);
+      if (edgeView === 'side') { x.textAlign = 'left'; x.fillText('toward the red dwarf', 12, 20) }
+      for (const o of [EL.h, EL.i]) { x.beginPath(); for (let j = 0; j <= 160; j++) { const p = kep(o, o.ep + j / 160 * o.P * DAY); const q = proj(p); q.Y -= s.b[2] * k; j ? x.lineTo(q.X, q.Y) : x.moveTo(q.X, q.Y) } x.strokeStyle = line; x.stroke() }
+      const list = [['2 h', s.h, EL.h.r, s.gapH < 0, giant2], ['2 i', s.i, EL.i.r, s.gapI < 0, giant2], ['2 g', s.g, EL.g.r, s.gapH < 0 || s.gapI < 0, giant]]
+        .map(([n, p, r, hh, col]) => ({ n, r, hh, col, ...proj([p[0] - s.b[0], p[1] - s.b[1], p[2]]) }));
+      list.sort((a, b) => b.depth - a.depth);
+      let shown = 0; const placed = [];
+      for (const b of list) {
+        if (b.X < -80 || b.X > w + 80) continue; shown++;
+        x.beginPath(); x.arc(b.X, b.Y, b.r * k, 0, 2 * Math.PI); x.fillStyle = b.col; x.fill(); x.strokeStyle = css('--panel'); x.lineWidth = 1.5; x.stroke();
+        if (b.hh) { x.strokeStyle = hit; x.lineWidth = 2.5; x.beginPath(); x.arc(b.X, b.Y, b.r * k + 2, 0, 2 * Math.PI); x.stroke() } x.lineWidth = 1;
+        let ly = b.Y - b.r * k - 8; if (placed.some(q => Math.abs(q[0] - b.X) < 34 && Math.abs(q[1] - ly) < 16)) ly = b.Y + b.r * k + 18; placed.push([b.X, ly]);
+        x.fillStyle = ink; x.font = '600 13px Oxanium,sans-serif'; x.textAlign = 'center'; x.fillText(b.n, b.X, ly); x.textAlign = 'left'
+      }
+      const g = list.find(b => b.n === '2 g');
+      if (g.X < 0 || g.X > w) { x.fillStyle = muted; x.font = '13px "Source Sans 3",sans-serif'; x.textAlign = 'center'; x.fillText('2 g is out of frame, ' + fmt(s.sepB / 1e3) + ' thousand km away', cx, 22); x.textAlign = 'left' }
+      $('edgeCap').textContent = EDGE_CAP[edgeView];
+    }
+    document.querySelectorAll('[data-view]').forEach(b => b.onclick = () => {
+      edgeView = b.dataset.view;
+      document.querySelectorAll('[data-view]').forEach(o => o.setAttribute('aria-pressed', o === b)); draw()
+    });
+    const nrm = o => { const I = o.i * R, O = o.O * R; return [Math.sin(O) * Math.sin(I), -Math.cos(O) * Math.sin(I), Math.cos(I)] };
+    {
+      const a = nrm(EL.g), b = nrm(EL.b); const ang = Math.acos(Math.min(1, a[0] * b[0] + a[1] * b[1] + a[2] * b[2]));
+      $('tiltAB').textContent = (ang / R).toFixed(3); $('maxSep').textContent = fmt(Math.round(EL.b.a * AU * Math.sin(ang) / 100) * 100);
+    }
+    function drawPlanes(s) {
+      const c = $('planes'), dpr = window.devicePixelRatio || 1, w = c.clientWidth, h = w / 3; c.width = w * dpr; c.height = h * dpr;
+      const x = c.getContext('2d'); x.setTransform(dpr, 0, 0, dpr, 0, 0); x.clearRect(0, 0, w, h);
+      const giant = css('--giant'), giant2 = css('--giant2'), line = css('--track'), ink = css('--ink'), muted = css('--muted');
+      const L = 58, Rm = 16, T = 16, B = 30, pw = w - L - Rm, ph = h - T - B, zmax = 14000;
+      const X = lam => L + lam / 360 * pw, Y = z => T + ph / 2 - z / zmax * (ph / 2);
+      x.font = '12px "Source Sans 3",sans-serif'; x.fillStyle = muted; x.strokeStyle = css('--line'); x.lineWidth = 1;
+      for (const z of [-10000, -5000, 0, 5000, 10000]) {
+        x.beginPath(); x.moveTo(L, Y(z)); x.lineTo(L + pw, Y(z)); x.stroke(); x.textAlign = 'right';
+        x.fillText((z > 0 ? '+' : z < 0 ? '−' : '') + fmt(Math.abs(z)), L - 6, Y(z) + 4)
+      }
+      x.textAlign = 'center'; for (const lam of [0, 90, 180, 270, 360]) x.fillText(lam + '°', X(lam), h - 10);
+      x.save(); x.translate(12, T + ph / 2); x.rotate(-Math.PI / 2); x.fillText('height, km', 0, 0); x.restore();
+      const curve = (o, col, dash) => {
+        const n = nrm(o), a = o.a * AU; x.setLineDash(dash); x.strokeStyle = col; x.lineWidth = 2; x.beginPath();
+        for (let j = 0; j <= 360; j++) { const lam = j * R, px = a * Math.cos(lam), py = a * Math.sin(lam), z = -(n[0] * px + n[1] * py) / n[2]; j ? x.lineTo(X(j), Y(z)) : x.moveTo(X(j), Y(z)) }
+        x.stroke(); x.setLineDash([]); x.lineWidth = 1
+      };
+      curve(EL.g, giant, [3, 4]); curve(EL.b, giant2, [8, 5]);
+      const lon = p => { let d = Math.atan2(p[1], p[0]) / R; return d < 0 ? d + 360 : d };
+      const lb = lon(s.b); x.strokeStyle = ink; x.globalAlpha = .35; x.beginPath(); x.moveTo(X(lb), T); x.lineTo(X(lb), T + ph); x.stroke(); x.globalAlpha = 1;
+      for (const [p, col, n] of [[s.b, giant2, 'pair'], [s.g, giant, '2 g']]) { x.beginPath(); x.arc(X(lon(p)), Y(p[2]), 4.5, 0, 2 * Math.PI); x.fillStyle = col; x.fill() }
+      x.textAlign = 'left'; x.fillStyle = giant; x.fillText("2 g's plane", L + 8, T + 12); x.fillStyle = giant2; x.fillText("barycentre's plane", L + 90, T + 12);
+    }
+    function draw() {
+      const s = state(t); drawSys(s); drawZoom(s); drawEdge(s); drawPlanes(s);
+      $('clock').innerHTML = realDate(t, true) + ' UTC<small>' + gameDate(t) + '</small>';
+      for (const [id, g] of [['roH', s.gapH], ['roI', s.gapI]]) { const el = $(id); el.classList.toggle('hit', g < 0); el.querySelector('strong').textContent = g < 0 ? 'Overlapping by ' + fmt(-g) + ' km' : fmt(g) + ' km' }
+      $('roB').querySelector('strong').textContent = fmt(s.sepB) + ' km';
+      if (document.activeElement !== $('when')) $('when').value = iso(t).slice(0, 16);
+    }
+    function setPlaying(p) { playing = p; $('play').textContent = p ? 'Pause' : 'Play'; last = null; if (p) requestAnimationFrame(loop) }
+    function loop(ts) { if (!playing) return; if (last !== null) { t += (ts - last) / 1000 * parseFloat($('speed').value) * 3600e3; draw() } last = ts; requestAnimationFrame(loop) }
+    $('play').onclick = () => setPlaying(!playing);
+    document.querySelectorAll('[data-step]').forEach(b => b.onclick = () => { t += parseFloat(b.dataset.step) * 3600e3; draw() });
+    $('next').onclick = () => { const e = ev.find(e => closest(e) > t + 3600e3); if (e) { t = closest(e); draw() } };
+    $('prev').onclick = () => { const e = [...ev].reverse().find(e => closest(e) < t - 3600e3); if (e) { t = closest(e); draw() } };
+    $('when').onchange = () => { const v = Date.parse($('when').value + ':00Z'); if (!isNaN(v)) { t = v; draw() } };
+    window.addEventListener('resize', draw);
+    document.fonts && document.fonts.ready.then(draw);
+    draw();
+    if (!matchMedia('(prefers-reduced-motion: reduce)').matches) setPlaying(true);
+  </script>
+</body>
+
+</html>
