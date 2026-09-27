@@ -413,7 +413,8 @@
           its orbital distance, plotted against direction from the red dwarf. Both planes pass through the red dwarf, so
           they cross each other on one line. They are tilted <span id="tiltAB"></span>° relative to each other, so at
           the pair's distance they are never more than about <span id="maxSep"></span> km apart. The vertical line marks
-          where 2 g and the pair are now.</figcaption>
+          where 2 g and the pair's barycentre are now; the small dots are 2 h and 2 i, which swing around the barycentre
+          fast enough to make or break contact with 2 g even while the barycentre itself is moving apart from it.</figcaption>
       </figure>
     </div>
 
@@ -624,7 +625,7 @@
       // orbital planes: reference plane z=0, barycentre 13's plane, 2 g's plane (all pass through the red dwarf)
       const hx = [-sa, ca], rx = [ca, sa], axis = edgeView === 'star' ? hx : rx;
       const planeZ = (o, u) => {
-        const I = o.i * R, O = o.O * R, nx = Math.sin(O) * Math.sin(I), ny = -Math.cos(O) * Math.sin(I), nz = Math.cos(I);
+        const I = o.i * R, O = -o.O * R, nx = Math.sin(O) * Math.sin(I), ny = -Math.cos(O) * Math.sin(I), nz = Math.cos(I);
         const Px = s.b[0] + axis[0] * u, Py = s.b[1] + axis[1] * u; return -(nx * Px + ny * Py) / nz
       };
       const lines = [{ name: 'reference plane', z: () => 0, col: line, dash: [2, 6], lw: 1 },
@@ -660,7 +661,7 @@
       edgeView = b.dataset.view;
       document.querySelectorAll('[data-view]').forEach(o => o.setAttribute('aria-pressed', o === b)); draw()
     });
-    const nrm = o => { const I = o.i * R, O = o.O * R; return [Math.sin(O) * Math.sin(I), -Math.cos(O) * Math.sin(I), Math.cos(I)] };
+    const nrm = o => { const I = o.i * R, O = -o.O * R; return [Math.sin(O) * Math.sin(I), -Math.cos(O) * Math.sin(I), Math.cos(I)] };
     {
       const a = nrm(EL.g), b = nrm(EL.b); const ang = Math.acos(Math.min(1, a[0] * b[0] + a[1] * b[1] + a[2] * b[2]));
       $('tiltAB').textContent = (ang / R).toFixed(3); $('maxSep').textContent = fmt(Math.round(EL.b.a * AU * Math.sin(ang) / 100) * 100);
@@ -668,7 +669,7 @@
     function drawPlanes(s) {
       const c = $('planes'), dpr = window.devicePixelRatio || 1, w = c.clientWidth, h = w / 3; c.width = w * dpr; c.height = h * dpr;
       const x = c.getContext('2d'); x.setTransform(dpr, 0, 0, dpr, 0, 0); x.clearRect(0, 0, w, h);
-      const giant = css('--giant'), giant2 = css('--giant2'), line = css('--track'), ink = css('--ink'), muted = css('--muted');
+      const giant = css('--giant'), giant2 = css('--giant2'), line = css('--track'), ink = css('--ink'), muted = css('--muted'), hit = css('--contact');
       const L = 58, Rm = 16, T = 16, B = 30, pw = w - L - Rm, ph = h - T - B, zmax = 14000;
       const X = lam => L + lam / 360 * pw, Y = z => T + ph / 2 - z / zmax * (ph / 2);
       x.font = '12px "Source Sans 3",sans-serif'; x.fillStyle = muted; x.strokeStyle = css('--line'); x.lineWidth = 1;
@@ -686,7 +687,10 @@
       curve(EL.g, giant, [3, 4]); curve(EL.b, giant2, [8, 5]);
       const lon = p => { let d = Math.atan2(p[1], p[0]) / R; return d < 0 ? d + 360 : d };
       const lb = lon(s.b); x.strokeStyle = ink; x.globalAlpha = .35; x.beginPath(); x.moveTo(X(lb), T); x.lineTo(X(lb), T + ph); x.stroke(); x.globalAlpha = 1;
-      for (const [p, col, n] of [[s.b, giant2, 'pair'], [s.g, giant, '2 g']]) { x.beginPath(); x.arc(X(lon(p)), Y(p[2]), 4.5, 0, 2 * Math.PI); x.fillStyle = col; x.fill() }
+      for (const [p, col, r, hh] of [[s.h, giant2, 3, s.gapH < 0], [s.i, giant2, 3, s.gapI < 0], [s.b, giant2, 4.5, false], [s.g, giant, 4.5, false]]) {
+        x.beginPath(); x.arc(X(lon(p)), Y(p[2]), r, 0, 2 * Math.PI); x.fillStyle = col; x.fill();
+        if (hh) { x.strokeStyle = hit; x.lineWidth = 2; x.beginPath(); x.arc(X(lon(p)), Y(p[2]), r + 3, 0, 2 * Math.PI); x.stroke(); x.lineWidth = 1 }
+      }
       x.textAlign = 'left'; x.fillStyle = giant; x.fillText("2 g's plane", L + 8, T + 12); x.fillStyle = giant2; x.fillText("barycentre's plane", L + 90, T + 12);
     }
     function draw() {
